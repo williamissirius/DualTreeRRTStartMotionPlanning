@@ -54,7 +54,26 @@ if __name__ == "__main__":
     # env.Load('quadrotor.env.xml')
     env.Load('hw3.env.xml')
     time.sleep(0.1)
+    physics = RaveCreatePhysicsEngine(env,'ode')
+    env.SetPhysicsEngine(physics)
+    time.sleep(0.1)
+
+    with env:
+        env.GetPhysicsEngine().SetGravity([0,0, -1])
+        env.StopSimulation()
+        env.StartSimulation(timestep=1e-3)
+        starttime = time.time()
+
+    env.Load('hw3.env.xml')
+    time.sleep(0.1)
+
     robot = env.GetRobots()[0]
+
+    while True:
+        simtime = env.GetSimulationTime()*1e-3
+        realtime = time.time()-starttime
+        #print 'sim time: %fs, real time: %fs, diff = %fs'%(simtime,realtime,simtime-realtime)
+
     # 1) get the 1st robot that is inside the loaded scene
     # 2) assign it to the variable named 'robot'
     # robot = env.GetRobots()[0]
