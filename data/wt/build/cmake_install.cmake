@@ -1,4 +1,4 @@
-# Install script for directory: /home/xz/Desktop/DualTreeRRTStartMotionPlanning/data/myRRT_birrt
+# Install script for directory: /home/xz/Desktop/DualTreeRRTStartMotionPlanning/data/wt
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -33,7 +33,7 @@ if(NOT DEFINED CMAKE_INSTALL_SO_NO_EXE)
 endif()
 
 if(NOT CMAKE_INSTALL_COMPONENT OR "${CMAKE_INSTALL_COMPONENT}" STREQUAL "Unspecified")
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/." TYPE SHARED_LIBRARY FILES "/home/xz/Desktop/DualTreeRRTStartMotionPlanning/data/myRRT_birrt/build/CMakeFiles/CMakeRelink.dir/libmyRRT.so")
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/." TYPE SHARED_LIBRARY FILES "/home/xz/Desktop/DualTreeRRTStartMotionPlanning/data/wt/build/CMakeFiles/CMakeRelink.dir/libmyRRT.so")
 endif()
 
 if(CMAKE_INSTALL_COMPONENT)
@@ -44,5 +44,5 @@ endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
-file(WRITE "/home/xz/Desktop/DualTreeRRTStartMotionPlanning/data/myRRT_birrt/build/${CMAKE_INSTALL_MANIFEST}"
+file(WRITE "/home/xz/Desktop/DualTreeRRTStartMotionPlanning/data/wt/build/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")

@@ -65,12 +65,12 @@ public:
       env = envir;
       
     weight = str;
-     weight[0] = 1;
-      weight[1] = 1;
-       weight[2] = 1;
-        weight[3] = 0;
-         weight[4] = 0;
-          weight[5] = 0;
+     weight[0] = 2;
+      weight[1] = 2;
+       weight[2] = 2;
+        weight[3] = 0.5;
+         weight[4] = 0.5;
+          weight[5] = 0.5;
 
 
   }

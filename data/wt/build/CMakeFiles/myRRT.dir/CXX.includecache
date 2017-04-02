@@ -6,7 +6,7 @@
 
 #IncludeRegexTransform: 
 
-/home/xz/Desktop/DualTreeRRTStartMotionPlanning/data/myRRT_birrt/myRRT.cpp
+/home/xz/Desktop/DualTreeRRTStartMotionPlanning/data/wt/myRRT.cpp
 openrave/plugin.h
 -
 openrave/planningutils.h
@@ -32,9 +32,9 @@ boost/tokenizer.hpp
 boost/lexical_cast.hpp
 -
 myRRT.h
-/home/xz/Desktop/DualTreeRRTStartMotionPlanning/data/myRRT_birrt/myRRT.h
+/home/xz/Desktop/DualTreeRRTStartMotionPlanning/data/wt/myRRT.h
 
-/home/xz/Desktop/DualTreeRRTStartMotionPlanning/data/myRRT_birrt/myRRT.h
+/home/xz/Desktop/DualTreeRRTStartMotionPlanning/data/wt/myRRT.h
 vector
 -
 cmath
