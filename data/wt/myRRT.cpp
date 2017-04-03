@@ -105,7 +105,7 @@ public:
         _lower[3] = _lower[4] = _lower[5] = -3.14;
 
         _upper[0] = 4.9;
-        _upper[1] = 2.0;
+        _upper[1] = 2.4;
         _upper[2] =  2;
         _upper[3] = _upper[4] = _upper[5] = 3.14;
 
@@ -167,7 +167,7 @@ public:
     {
 
  
-      float ssc_step = 0.1;
+      float ssc_step = _StepSize;
 		for (int i = 0; i < 200; ++i)
 		{
             if (path.size() <= 10)
@@ -236,7 +236,7 @@ public:
     }
   double distanceTo(const Configuration &a , const Configuration &b)
     {
-      double weight[] =  { 1,1,1,0,0,0};
+      double weight[] =  { 2,2,2,0.5,0.5,0.5};
          double dist = 0.0;
           int langth = a.size();
             for (int i = 0; i < langth; ++i)

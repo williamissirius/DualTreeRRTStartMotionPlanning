@@ -1,6 +1,15 @@
+<<<<<<< HEAD
 /media/psf/Dropbox/2017Spring/EECS598/Project/DualTreeRRTStartMotionPlanning/data/wt/build/CMakeFiles/install.dir
 /media/psf/Dropbox/2017Spring/EECS598/Project/DualTreeRRTStartMotionPlanning/data/wt/build/CMakeFiles/list_install_components.dir
 /media/psf/Dropbox/2017Spring/EECS598/Project/DualTreeRRTStartMotionPlanning/data/wt/build/CMakeFiles/myRRT.dir
 /media/psf/Dropbox/2017Spring/EECS598/Project/DualTreeRRTStartMotionPlanning/data/wt/build/CMakeFiles/install/local.dir
 /media/psf/Dropbox/2017Spring/EECS598/Project/DualTreeRRTStartMotionPlanning/data/wt/build/CMakeFiles/rebuild_cache.dir
 /media/psf/Dropbox/2017Spring/EECS598/Project/DualTreeRRTStartMotionPlanning/data/wt/build/CMakeFiles/edit_cache.dir
+=======
+/home/xz/Desktop/DualTreeRRTStartMotionPlanning/data/wt/build/CMakeFiles/install.dir
+/home/xz/Desktop/DualTreeRRTStartMotionPlanning/data/wt/build/CMakeFiles/list_install_components.dir
+/home/xz/Desktop/DualTreeRRTStartMotionPlanning/data/wt/build/CMakeFiles/myRRT.dir
+/home/xz/Desktop/DualTreeRRTStartMotionPlanning/data/wt/build/CMakeFiles/install/local.dir
+/home/xz/Desktop/DualTreeRRTStartMotionPlanning/data/wt/build/CMakeFiles/rebuild_cache.dir
+/home/xz/Desktop/DualTreeRRTStartMotionPlanning/data/wt/build/CMakeFiles/edit_cache.dir
+>>>>>>> f6de7f4ab0eb25bcd81eba9d907d636dc1d8072f

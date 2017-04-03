@@ -51,7 +51,7 @@ if __name__ == "__main__":
 
     env.Reset()        
     # load a scene from ProjectRoom environment XML file
-    env.Load('bitreequad.env.xml')
+    env.Load('env/bitreequad.env.xml')
     time.sleep(0.1)
 
     # 1) get the 1st robot that is inside the loaded scene
@@ -77,12 +77,12 @@ if __name__ == "__main__":
     handles = [];
     raw_input("next?!!!!!!!");
     with env:
-        goalconfig = [-4.3, 0.8 ,1 ,0.0 ,0.0 ,0.0];
+        goalconfig = [-4.3, 0.8 ,0.5 ,0.0 ,0.0 ,0.0];
         # goalconfig = [4,0.87,2.09,1.5,0,0];
         ### YOUR CODE HERE ###
         ###call your plugin to plan, draw, and execute a path from the current configuration of the left arm to the goalconfig
         goalbias = 0.4;
-        step = 0.3;
+        step = 0.2;
 
         myRRT.SendCommand('SetStrGoal str %f,%f,%f,%f,%f,%f; goal %f,%f,%f,%f,%f,%f;'%tuple(startconfig+goalconfig) );
         myRRT.SendCommand('SetPara %f,%f'%tuple([goalbias,step]) );

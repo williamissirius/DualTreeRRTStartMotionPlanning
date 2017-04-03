@@ -6,7 +6,11 @@
 
 #IncludeRegexTransform: 
 
+<<<<<<< HEAD
 /media/psf/Dropbox/2017Spring/EECS598/Project/DualTreeRRTStartMotionPlanning/data/wt/myRRT.cpp
+=======
+/home/xz/Desktop/DualTreeRRTStartMotionPlanning/data/wt/myRRT.cpp
+>>>>>>> f6de7f4ab0eb25bcd81eba9d907d636dc1d8072f
 openrave/plugin.h
 -
 openrave/planningutils.h
@@ -32,9 +36,15 @@ boost/tokenizer.hpp
 boost/lexical_cast.hpp
 -
 myRRT.h
+<<<<<<< HEAD
 /media/psf/Dropbox/2017Spring/EECS598/Project/DualTreeRRTStartMotionPlanning/data/wt/myRRT.h
 
 /media/psf/Dropbox/2017Spring/EECS598/Project/DualTreeRRTStartMotionPlanning/data/wt/myRRT.h
+=======
+/home/xz/Desktop/DualTreeRRTStartMotionPlanning/data/wt/myRRT.h
+
+/home/xz/Desktop/DualTreeRRTStartMotionPlanning/data/wt/myRRT.h
+>>>>>>> f6de7f4ab0eb25bcd81eba9d907d636dc1d8072f
 vector
 -
 cmath

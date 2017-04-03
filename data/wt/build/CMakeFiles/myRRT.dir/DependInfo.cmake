@@ -4,7 +4,11 @@ set(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_CXX
+<<<<<<< HEAD
   "/media/psf/Dropbox/2017Spring/EECS598/Project/DualTreeRRTStartMotionPlanning/data/wt/myRRT.cpp" "/media/psf/Dropbox/2017Spring/EECS598/Project/DualTreeRRTStartMotionPlanning/data/wt/build/CMakeFiles/myRRT.dir/myRRT.cpp.o"
+=======
+  "/home/xz/Desktop/DualTreeRRTStartMotionPlanning/data/wt/myRRT.cpp" "/home/xz/Desktop/DualTreeRRTStartMotionPlanning/data/wt/build/CMakeFiles/myRRT.dir/myRRT.cpp.o"
+>>>>>>> f6de7f4ab0eb25bcd81eba9d907d636dc1d8072f
   )
 set(CMAKE_CXX_COMPILER_ID "GNU")
 

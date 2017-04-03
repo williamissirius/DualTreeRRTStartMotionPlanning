@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 # Install script for directory: /media/psf/Dropbox/2017Spring/EECS598/Project/DualTreeRRTStartMotionPlanning/data/wt
+=======
+# Install script for directory: /home/xz/Desktop/DualTreeRRTStartMotionPlanning/data/wt
+>>>>>>> f6de7f4ab0eb25bcd81eba9d907d636dc1d8072f
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -33,7 +37,11 @@ if(NOT DEFINED CMAKE_INSTALL_SO_NO_EXE)
 endif()
 
 if(NOT CMAKE_INSTALL_COMPONENT OR "${CMAKE_INSTALL_COMPONENT}" STREQUAL "Unspecified")
+<<<<<<< HEAD
   file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/." TYPE SHARED_LIBRARY FILES "/media/psf/Dropbox/2017Spring/EECS598/Project/DualTreeRRTStartMotionPlanning/data/wt/build/CMakeFiles/CMakeRelink.dir/libmyRRT.so")
+=======
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/." TYPE SHARED_LIBRARY FILES "/home/xz/Desktop/DualTreeRRTStartMotionPlanning/data/wt/build/CMakeFiles/CMakeRelink.dir/libmyRRT.so")
+>>>>>>> f6de7f4ab0eb25bcd81eba9d907d636dc1d8072f
 endif()
 
 if(CMAKE_INSTALL_COMPONENT)
@@ -44,5 +52,9 @@ endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
+<<<<<<< HEAD
 file(WRITE "/media/psf/Dropbox/2017Spring/EECS598/Project/DualTreeRRTStartMotionPlanning/data/wt/build/${CMAKE_INSTALL_MANIFEST}"
+=======
+file(WRITE "/home/xz/Desktop/DualTreeRRTStartMotionPlanning/data/wt/build/${CMAKE_INSTALL_MANIFEST}"
+>>>>>>> f6de7f4ab0eb25bcd81eba9d907d636dc1d8072f
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")

@@ -48,10 +48,17 @@ RM = /usr/bin/cmake -E remove -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
+<<<<<<< HEAD
 CMAKE_SOURCE_DIR = /media/psf/Dropbox/2017Spring/EECS598/Project/DualTreeRRTStartMotionPlanning/data/wt
 
 # The top-level build directory on which CMake was run.
 CMAKE_BINARY_DIR = /media/psf/Dropbox/2017Spring/EECS598/Project/DualTreeRRTStartMotionPlanning/data/wt/build
+=======
+CMAKE_SOURCE_DIR = /home/xz/Desktop/DualTreeRRTStartMotionPlanning/data/wt
+
+# The top-level build directory on which CMake was run.
+CMAKE_BINARY_DIR = /home/xz/Desktop/DualTreeRRTStartMotionPlanning/data/wt/build
+>>>>>>> f6de7f4ab0eb25bcd81eba9d907d636dc1d8072f
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -113,9 +120,15 @@ edit_cache/fast: edit_cache
 
 # The main all target
 all: cmake_check_build_system
+<<<<<<< HEAD
 	$(CMAKE_COMMAND) -E cmake_progress_start /media/psf/Dropbox/2017Spring/EECS598/Project/DualTreeRRTStartMotionPlanning/data/wt/build/CMakeFiles /media/psf/Dropbox/2017Spring/EECS598/Project/DualTreeRRTStartMotionPlanning/data/wt/build/CMakeFiles/progress.marks
 	$(MAKE) -f CMakeFiles/Makefile2 all
 	$(CMAKE_COMMAND) -E cmake_progress_start /media/psf/Dropbox/2017Spring/EECS598/Project/DualTreeRRTStartMotionPlanning/data/wt/build/CMakeFiles 0
+=======
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/xz/Desktop/DualTreeRRTStartMotionPlanning/data/wt/build/CMakeFiles /home/xz/Desktop/DualTreeRRTStartMotionPlanning/data/wt/build/CMakeFiles/progress.marks
+	$(MAKE) -f CMakeFiles/Makefile2 all
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/xz/Desktop/DualTreeRRTStartMotionPlanning/data/wt/build/CMakeFiles 0
+>>>>>>> f6de7f4ab0eb25bcd81eba9d907d636dc1d8072f
 .PHONY : all
 
 # The main clean target
