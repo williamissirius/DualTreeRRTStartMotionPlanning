@@ -69,10 +69,10 @@ if __name__ == "__main__":
 
     robot = env.GetRobots()[0]
 
-    while True:
-        simtime = env.GetSimulationTime()*1e-3
-        realtime = time.time()-starttime
-        #print 'sim time: %fs, real time: %fs, diff = %fs'%(simtime,realtime,simtime-realtime)
+    # while True:
+    #     simtime = env.GetSimulationTime()*1e-3
+    #     realtime = time.time()-starttime
+    #     #print 'sim time: %fs, real time: %fs, diff = %fs'%(simtime,realtime,simtime-realtime)
 
     # 1) get the 1st robot that is inside the loaded scene
     # 2) assign it to the variable named 'robot'

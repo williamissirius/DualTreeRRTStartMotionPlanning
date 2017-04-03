@@ -7,6 +7,22 @@ using namespace OpenRAVE;
 
 typedef std::vector<double> Configuration;
 
+
+class StateNode
+{
+	std::vector<double> stateVector;
+	
+
+public:
+		StateNode()
+		{
+
+		}
+
+
+
+};
+
 class RRTNode
 {
   Configuration _config;
