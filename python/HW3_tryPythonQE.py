@@ -21,13 +21,7 @@ def waitrobot(robot):
     while not robot.GetController().IsDone():
         time.sleep(0.01)
 
-def tuckarms(env,robot):
-    with env:
-        jointnames = ['l_shoulder_lift_joint','l_elbow_flex_joint','l_wrist_flex_joint','r_shoulder_lift_joint','r_elbow_flex_joint','r_wrist_flex_joint']
-        robot.SetActiveDOFs([robot.GetJoint(name).GetDOFIndex() for name in jointnames])
-        robot.SetActiveDOFValues([1.29023451,-2.32099996,-0.69800004,1.27843491,-2.32100002,-0.69799996]);        
-        robot.GetController().SetDesired(robot.GetDOFValues());
-    waitrobot(robot)
+
 
 def stringToFloatList(path):
     path = path.split('\n')
@@ -61,24 +55,9 @@ if __name__ == "__main__":
     # 2) assign it to the variable named 'robot'
     robot = env.GetRobots()[0]
 
-    ### INITIALIZE YOUR PLUGIN HERE ###
-    # RaveInitialize();
-    # RaveLoadPlugin('build/myRRT')
-    # myRRT = RaveCreateModule(env,'myRRT')
-    ### END INITIALIZING YOUR PLUGIN ###
-   
-
-    # tuck in the PR2's arms for driving
-    # tuckarms(env,robot);
-  
-    #set start config
-    # robot.SetActiveDOFs([],DOFAffine.X|DOFAffine.Y|DOFAffine.Z|DOFAffine.Rotation3D) 
     robot.SetActiveDOFs([],DOFAffine.X|DOFAffine.Y|DOFAffine.Z|DOFAffine.RotationQuat) 
-    # print robot.GetActiveDOFValues()
-    # raw_input("Press enter to move robot...")
-    # qt = tf.quaternion_from_euler(0.5,0.5,0.75,'rzxz')
-    # startconfig = [4.0,-1.5 ,0.2] + list(qt)
-    # print startconfig
+    print "DOF"
+    print robot.GetActiveDOFIndices();
 
     startconfig = [ 4.0,-1.5 ,0.2 ,0.0, 0.0, 0.0 ];
     robot.SetActiveDOFValues(us.E2Q(startconfig));
@@ -86,13 +65,14 @@ if __name__ == "__main__":
     # waitrobot(robot);
     handles = [];
     # raw_input("Press enter to move robot...")
+    raw_input("Press enter to exit...")
     with env:
         goalconfig = [-4.3, 0.8, 1 ,0.0 ,0.0 ,0.0];
         # goalconfig = [4,0.87,2.09,1.5,0,0];
         ### YOUR CODE HERE ###
         ###call your plugin to plan, draw, and execute a path from the current configuration of the left arm to the goalconfig
         goalbias = 0.1;
-        step = 0.4;
+        step = 0.3;
 
         # workspace boundary x,y,z
         workspaceBound = [-4.5,4.5,-2.2,2.2,0.21,1.54]
@@ -159,7 +139,7 @@ if __name__ == "__main__":
             path = us.getpath(cTree,goalconfig)
             # smooth path
 
-            for i in range(200):
+            for i in range(20000):
                 n = len(path)
                 A = randrange(0,n)
                 B = randrange(0,n)
@@ -168,16 +148,16 @@ if __name__ == "__main__":
                 t = A
                 A = min(A,B)
                 B = max(B,t)
-                print "AB"
-                print (A,B)
+                #print "AB"
+                #print (A,B)
                 # A = B + 2
                 a = path[A]
                 b = path[B]
                 smoothPath = us.stepNodes(a,b,step)
 
                 flag = False
-                print "smooth path"
-                print smoothPath
+                #print "smooth path"
+                #print smoothPath
                 for smoothNode in smoothPath:
                     # print smoothNode
                     robot.SetActiveDOFValues(us.E2Q(smoothNode))
@@ -197,33 +177,16 @@ if __name__ == "__main__":
 
 
             color = array(((0,0,1)))
+
             for i in path:
                 handles.append(env.plot3(points=dot(array([i[0],i[1],i[2]]),1),
                                            pointsize=0.03,
                                            colors=color,
-                                           drawstyle=1))
+                                           drawstyle=1));
             # raw_input("Press enter to move robot...")
 
-
-
-        # create a trajectory
-
-
-    # with env:
-    #     traj = RaveCreateTrajectory(env,'')
-    #     traj.Init(robot.GetActiveConfigurationSpecification())
-        
-    #     num = 0
-    #     total = len(path)
-    #     for pathNode in path:
-    #         traj.Insert(num,us.E2Q(pathNode))
-    #         num = num+1
-    #     planningutils.RetimeActiveDOFTrajectory(traj,robot,hastimestamps=False,maxvelmult=3,maxaccelmult=1,plannername='LinearTrajectoryRetimer')
-    #     # print 'duration',traj.GetDuration()
-    # robot.GetController().SetPath(traj)
-    # robot.WaitForController(0)
-
-    robot.SetActiveDOFs([],DOFAffine.X|DOFAffine.Y|DOFAffine.Z|DOFAffine.Rotation3D)
+    print "Path Length", len(path)
+    # robot.SetActiveDOFs([],DOFAffine.X|DOFAffine.Y|DOFAffine.Z|DOFAffine.Rotation3D)
     traj = RaveCreateTrajectory(env,'');
     config = robot.GetActiveConfigurationSpecification('linear');
 
@@ -232,10 +195,25 @@ if __name__ == "__main__":
     # mypath = [];
     newpath = [];
 
-    myPath = [ [point[0],point[1],point[2],point[3],point[4],point[5],i*0.01] for i,point in enumerate(path) ];
+    offset = 0;
+    for i,point in enumerate(path):
+        newPoint = us.E2Q(point)
+
+        if i == 0 :
+            newpath.append([newPoint[0],newPoint[1],newPoint[2],newPoint[3],newPoint[4],newPoint[5], newPoint[6], i*0.005])
+        else:
+            lastPoint = us.E2Q(path[i-1])
+            if (lastPoint[0] == point[0] and lastPoint[1] == point[1] and lastPoint[2] == point[2]):
+                offset = offset + 1
+                pass
+            else:
+                newpath.append([newPoint[0],newPoint[1],newPoint[2],newPoint[3],newPoint[4],newPoint[5], newPoint[6], (i-offset)*0.005]);
+            
+        
     
-    for i ,wayPoint in enumerate(myPath):
-        traj.Insert(i,wayPoint,config,True);
+    for i ,wayPoint in enumerate(newpath):
+
+        traj.Insert(i, wayPoint,config,True);
 
 
     while 1:
@@ -243,36 +221,6 @@ if __name__ == "__main__":
 
         waitrobot(robot)
 
-
-
-
-
-
-
-
-
-
-        # traj = RaveCreateTrajectory(env,'');
-        # config = robot.GetActiveConfigurationSpecification('linear');
-
-        # config.AddDeltaTimeGroup();
-        # traj.Init(config);
-        # # myPath = [ [point.x, point.y,point.theta,i*0.01] for i,point in enumerate(path) ];
-        
-        # num = 0
-        # for pathNode in path:
-        #     num += 1
-        #     traj.Insert(num,pathNode,config,True)
-
-
-
-        # # for i ,wayPoint in enumerate(myPath):
-        # #     traj.Insert(i,wayPoint,config,True);
-        # robot.GetController().SetPath(traj);
-
-        # # robot.GetController().SetPath(traj)
-
-    ### END OF YOUR CODE ###
 
     raw_input("Press enter to exit...")
 
