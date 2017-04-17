@@ -11,10 +11,14 @@ import kdtree
 import scipy.spatial as spatial
 import cgkit.all as cg
 
+# weight of quaternion in distance 
+QWEIGHT = 0
+
 def S2CQ(s):
     # return the configuration part of a state point
     # s = [x,v,Q,W]
     return s[0:3]+s[6:10]
+
 
 def nnNodeIndexPathSQ(s,path,startIndex):
     # return the nearest node index in path of state point s, index smaller than startIndex won't count
@@ -24,9 +28,9 @@ def nnNodeIndexPathSQ(s,path,startIndex):
         if minL > dist:
             minIndex = i
             minL = dist
-
-
     return minIndex
+
+
 def sampleFSC(s,c):
     # sample force vector at state s while setting c as the goal
     # error is the position error with the goal
@@ -78,7 +82,7 @@ def sampleFSC(s,c):
     kz = 1
     kx = 0.5
     ky = 0.5
-    kv = 0.35
+    kv = 0.3
 
     eXb = eXb + eVb*kv
 
@@ -99,7 +103,7 @@ def sampleFSC(s,c):
 
 
 
-def distCSQ(s,c,w = 0.5):
+def distCSQ(s,c,w = QWEIGHT):
     # return the distance between a state point and a configuration point
     # using quaternion
     # s = [x,v,Q,W]
@@ -115,7 +119,7 @@ def sampleFS(s):
     R = Q2R(q)
     zw = np.matmul(R,[0,0,1])
     zproj = zw[2]
-    average = 4.5325#/zproj
+    average = 4.5325/(0.5*zproj+0.5)
 
     f1 = abs(np.random.normal(average, stdev))
     f2 = abs(np.random.normal(average, stdev))
@@ -135,7 +139,7 @@ def sampleF():
     f = [f1,f2,f3,f4]
     return f
 
-def distXQ(a,b, w = 0.5):
+def distXQ(a,b, w = QWEIGHT):
     # return the distance between two configuration
     ax = np.array(a[0:3])
     aq = np.array(a[3:7])
@@ -155,7 +159,7 @@ def nnNodeCQ(tree,node):
         if iToNode < min:
             min = iToNode
             minIndex = i
-    return i
+    return minIndex
 
 def xyzt(start,end,t):
     # return a interpolation of start to end at t
@@ -284,8 +288,8 @@ def limitTo(a,lower,upper):
 
     # sample a anlge from
 
-
-def sampleCE(workspaceBound = [-4.5,3.5,-2.2,2.2,0.21,1.54]):
+# [-4.5,3.5,-2.2,2.2,0.21,1.54]
+def sampleCE(workspaceBound = [-4.5,4.5,-2.2,2.2,0.21,1.54]):
     x = np.random.uniform(workspaceBound[0],workspaceBound[1])
     y = np.random.uniform(workspaceBound[2],workspaceBound[3])
     z = np.random.uniform(workspaceBound[4],workspaceBound[5])
@@ -299,19 +303,23 @@ def sampleCE(workspaceBound = [-4.5,3.5,-2.2,2.2,0.21,1.54]):
             break
     return [x,y,z,q1,q2,q3]
 
-def sampleCQ(workspaceBound = [-4.5,3.5,-2.2,2.2,0.21,1.54]):
+def sampleCQ(workspaceBound = [-4.5,4.5,-2.2,2.2,0.21,1.54]):
     x = np.random.uniform(workspaceBound[0],workspaceBound[1])
     y = np.random.uniform(workspaceBound[2],workspaceBound[3])
     z = np.random.uniform(workspaceBound[4],workspaceBound[5])
 
 
     q1 = np.random.uniform(0,2*np.pi)
-    q3 = 0 #np.random.uniform(0,2*np.pi)
+    q3 = np.random.uniform(0,2*np.pi)
+    # q3 = 0 #np.random.uniform(0,2*np.pi)
 
-    while 1:
-        q2 = np.abs(np.random.normal(0,np.pi/4))
-        if q2 <= np.pi/2:
-            break
+    # while 1:
+    #     q2 = np.abs(np.random.normal(0,np.pi/2))
+    #     if q2 <= np.pi/2:
+    #         break
+    q2 = np.random.uniform(0,0.5*np.pi)
+
+
 
     return [x,y,z] + list(tf.quaternion_from_euler(q1,q2,q3,'rzxz'))
 

@@ -22,7 +22,6 @@ if not __openravepy_build_doc__:
 
 
 
-
 def calculateL2(state1, state2):
 	i = 0
 	s = 0.0
@@ -74,8 +73,8 @@ if __name__ == "__main__":
 	# print "DOF"
 	# print robot.GetActiveDOFIndices();
 
-	# startconfig = [ 4.0,-1.5 ,0.35 ,1.0, 0.0, 0.0, 0.0 ];
-	startconfig = [ -2,-1.8 ,0.35 ,1.0, 0.0, 0.0, 0.0 ];
+	startconfig = [ 4.0,-1.5 ,0.35 ,1.0, 0.0, 0.0, 0.0 ];
+	# startconfig = [ -2,-1.8 ,0.35 ,1.0, 0.0, 0.0, 0.0 ];
 	robot.SetActiveDOFValues(startconfig);
 	# robot.GetController().SetDesired(robot.GetDOFValues());
 	# waitrobot(robot);
@@ -88,7 +87,7 @@ if __name__ == "__main__":
 		goalconfig = [-4.3, 0.8, 1 ,1.0 ,0.0 ,0.0 ,0.0];
 		# goalconfig = [4,0.87,2.09,1.5,0,0];
 		goalbias = 0.1;
-		step = 0.3;
+		step = 0.5;
 
 		# workspace boundary x,y,z
 		workspaceBound = [-4.5,4.5,-2.2,2.2,0.21,1.54]
@@ -100,108 +99,113 @@ if __name__ == "__main__":
 		iterTime = 0        # search and build tree
 		iterout = 0
 		cTreeSize = 1
-		newAddedNode = startconfig
-		while iterTime < 100000:
-			if iterout >= 1000:
-				print iterTime
-				iterout = iterout - 1000
-			# print iterTime
-			iterTime = iterTime + 1
-			iterout = iterout + 1
-			# test bias
-			chance = random.uniform(0,1)
+	# newAddedNode = startconfig
+	while iterTime < 100000:
+		# time.sleep(0.4)
+		if iterout >= 1000:
+			print iterTime
+			iterout = iterout - 1000
+		# print iterTime
+		iterTime = iterTime + 1
+		iterout = iterout + 1
+		# test bias
+		chance = random.uniform(0,1)
 
-			if chance < goalbias: # try to connect the goal
-				# print "try goal"
-				newnode = goalconfig
-				nnNode = us.nnNodeCQ(cTree,newnode)
-				# nnNode = newAddedNode
-				if us.distXQ(nnNode,newnode) <= step: # goal is within one step length!
-					cTree[tuple(goalconfig)] = tuple(nnNode) 
-					print "find path, it is just near!"
-					break
-				else: # goal is far than one step
-					nnPath = us.stepNodesQ(nnNode,newnode,step)
-					collision = False
-					for pathNode in nnPath: # check the path to goal
-						robot.SetActiveDOFValues(pathNode)
-						if env.CheckCollision(robot) == True:
-							collision = True
-							break
-
-					if collision == False: # the path is clear!
-						cTree[tuple(nnPath[0])] = tuple(nnNode)
-						for i in range(1,len(nnPath)):
-							cTree[tuple(nnPath[i])] = tuple(nnPath[i-1])
-						# cTree[tuple(goalconfig)] = tuple(nnPath[len(nnPath)-1])	
-							# print nnPath[i-1]
-
-						print "find path, by setp nodes!"	
-						break
-			else: # add new node to the RRT tree
-
-				newnode = us.sampleCQ();
-				nnNode = us.nnNodeCQ(cTree,newnode)
-				steerNode = us.step1NodeQ(nnNode,newnode,step)
-				robot.SetActiveDOFValues(steerNode)
-				if env.CheckCollision(robot) == False:
-					cTree[tuple(steerNode)] = tuple(nnNode)
-					newAddedNode = steerNode
-					cTreeSize += 1
-					print "add new node  cTree size:",cTreeSize	
-
-		robot.SetActiveDOFValues(startconfig) # return the robot the start            
-
-
-
-
-
-		if tuple(goalconfig) not in cTree: # have not found the path to the goal
-			raw_input("T_T")
-		else:
-			print "find goal in the outcome path!"
-			path = us.getpath(cTree,goalconfig)
-			# smooth path
-
-			for i in range(200):
-				print i
-				n = len(path)
-				A = randrange(0,n)
-				B = randrange(0,n)
-				while(abs(A-B)<=1):
-					B = randrange(0,n)
-				t = A
-				A = min(A,B)
-				B = max(B,t)
-				a = path[A]
-				b = path[B]
-				smoothPath = us.stepNodesQ(a,b,step)
-				flag = False
-				# print len(smoothPath)
-				for smoothNode in smoothPath:
-					# print smoothNode
-					robot.SetActiveDOFValues(smoothNode)
+		if chance < goalbias: # try to connect the goal
+			# print "try goal"
+			newnode = goalconfig
+			nnNode = us.nnNodeCQ(cTree,newnode)
+			# nnNode = newAddedNode
+			if us.distXQ(nnNode,newnode) <= step: # goal is within one step length!
+				cTree[tuple(goalconfig)] = tuple(nnNode) 
+				print "find path, it is just near!"
+				break
+			else: # goal is far than one step
+				nnPath = us.stepNodesQ(nnNode,newnode,step)
+				collision = False
+				for pathNode in nnPath: # check the path to goal
+					robot.SetActiveDOFValues(pathNode)
 					if env.CheckCollision(robot) == True:
-						flag = True
+						collision = True
 						break
 
-				if flag == False:
-					for k in range(A+1,B):
-						del path[A+1]
-						# print 'smoothing'
-					k = A+1    
-					for smoothNode in smoothPath:
-						path.insert(k,smoothNode)
-						k = k + 1
-			color = array(((0,0,1)))
+				if collision == False: # the path is clear!
+					cTree[tuple(nnPath[0])] = tuple(nnNode)
+					for i in range(1,len(nnPath)):
+						cTree[tuple(nnPath[i])] = tuple(nnPath[i-1])
+					# cTree[tuple(goalconfig)] = tuple(nnPath[len(nnPath)-1])	
+						# print nnPath[i-1]
 
-			path = us.discretePath(path, 0.1)
-			for i in path:
-				handles.append(env.plot3(points=dot(array([i[0],i[1],i[2]]),1),
-										   pointsize=0.03,
-										   colors=color,
-										   drawstyle=1));
-			
+					print "find path, by setp nodes!"	
+					break
+		else: # add new node to the RRT tree
+
+			newnode = us.sampleCQ();
+			# robot.SetActiveDOFValues(newnode)
+			# time.sleep(0.2)
+			nnNode = us.nnNodeCQ(cTree,newnode)
+			steerNode = us.step1NodeQ(nnNode,newnode,step)
+
+			robot.SetActiveDOFValues(steerNode)
+			# time.sleep(0.4)
+			if env.CheckCollision(robot) == False:
+				cTree[tuple(steerNode)] = tuple(nnNode)
+				# newAddedNode = steerNode
+				cTreeSize += 1
+				print "add new node  cTree size:",cTreeSize	
+
+	robot.SetActiveDOFValues(startconfig) # return the robot the start            
+
+
+
+
+
+	if tuple(goalconfig) not in cTree: # have not found the path to the goal
+		raw_input("T_T")
+	else:
+		print "find goal in the outcome path!"
+		path = us.getpath(cTree,goalconfig)
+		# smooth path
+
+		for i in range(200):
+			print i
+			n = len(path)
+			A = randrange(0,n)
+			B = randrange(0,n)
+			while(abs(A-B)<=1):
+				B = randrange(0,n)
+			t = A
+			A = min(A,B)
+			B = max(B,t)
+			a = path[A]
+			b = path[B]
+			smoothPath = us.stepNodesQ(a,b,step)
+			flag = False
+			# print len(smoothPath)
+			for smoothNode in smoothPath:
+				# print smoothNode
+				robot.SetActiveDOFValues(smoothNode)
+				if env.CheckCollision(robot) == True:
+					flag = True
+					break
+
+			if flag == False:
+				for k in range(A+1,B):
+					del path[A+1]
+					# print 'smoothing'
+				k = A+1    
+				for smoothNode in smoothPath:
+					path.insert(k,smoothNode)
+					k = k + 1
+		color = array(((0,0,1)))
+
+		path = us.discretePath(path, 0.1)
+		for i in path:
+			handles.append(env.plot3(points=dot(array([i[0],i[1],i[2]]),1),
+									   pointsize=0.03,
+									   colors=color,
+									   drawstyle=1));
+	# end of within env 
 	robot.SetActiveDOFValues(startconfig)
 	print "Path Length", len(path)
 	raw_input("Press enter to move robot...")
@@ -209,7 +213,7 @@ if __name__ == "__main__":
 
 	#sample
 	path_length = len(path)
-
+	# failureTIme = zeros(path)
 	StateTree = []
 
 	node = path[0]
@@ -226,7 +230,9 @@ if __name__ == "__main__":
 		reachedWaypoint = False;
 		minL2 = 100;
 		delta_t = 0.01
-		for x in xrange(1,50):
+
+		print "attemp index",i
+		for x in xrange(1,10):
 			f = us.sampleF()
 			t = delta_t
 			newState = previousStateNode
@@ -248,11 +254,10 @@ if __name__ == "__main__":
 
 
 				# nearestIndex = us.nnNodeIndexPathSQ(newState,path,i)
-				print "nearestIndex",nearestIndex,"path_length",path_length
 				l2Distance = us.distCSQ(newState,path[nearestIndex],0.05)
-				time.sleep(0.001)
+				time.sleep(0.01)
 
-				print l2Distance
+				# print l2Distance
 				if minL2 > l2Distance:
 					minL2 = l2Distance
 				if l2Distance < 0.3:
@@ -273,8 +278,8 @@ if __name__ == "__main__":
 
 						i = nearestIndex + 1
 						break
-				else:
-					print "Failed, L2 distance is ", l2Distance, "Current Minimum", minL2, "Fitting Index", i
+				# else:
+					# print "Failed, L2 distance is ", l2Distance, "Current Minimum", minL2, "Fitting Index", i
 				t = t + delta_t
 			if reachedWaypoint:
 				break;
