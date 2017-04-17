@@ -19,7 +19,27 @@ if not __openravepy_build_doc__:
 	from openravepy import *
 	from numpy import *
 
+def CheckNarrow(waypoint,stepsize):
+	a = [stepsize,0,-stepsize];
+	counter = 0;
+	for dx in a:
+		# for dy in a:
+		# 	for dz in a:
+				T = waypoint;
+				T[2] = T[2]+dx;
+				robot.SetActiveDOFValues(us.E2Q(T))
+				if env.CheckCollision(robot):
+					counter = counter +1;
+	return counter;
+			
 
+def FindNarrowPt(path,stepsize,pppp):
+	NarrowPt = [];
+	for waypoint in path:
+		lvl = CheckNarrow(waypoint,stepsize);
+		if lvl >= pppp:
+			NarrowPt.append(waypoint);
+	return NarrowPt
 
 
 def calculateL2(state1, state2):
@@ -100,103 +120,105 @@ if __name__ == "__main__":
 		iterout = 0
 		cTreeSize = 1
 	# newAddedNode = startconfig
-	while iterTime < 100000:
-		# time.sleep(0.4)
-		if iterout >= 1000:
-			print iterTime
-			iterout = iterout - 1000
-		# print iterTime
-		iterTime = iterTime + 1
-		iterout = iterout + 1
-		# test bias
-		chance = random.uniform(0,1)
+		while iterTime < 100000:
+			# time.sleep(0.4)
+			if iterout >= 1000:
+				print iterTime
+				iterout = iterout - 1000
+			# print iterTime
+			iterTime = iterTime + 1
+			iterout = iterout + 1
+			# test bias
+			chance = random.uniform(0,1)
 
-		if chance < goalbias: # try to connect the goal
-			# print "try goal"
-			newnode = goalconfig
-			nnNode = us.nnNodeCQ(cTree,newnode)
-			# nnNode = newAddedNode
-			if us.distXQ(nnNode,newnode) <= step: # goal is within one step length!
-				cTree[tuple(goalconfig)] = tuple(nnNode) 
-				print "find path, it is just near!"
-				break
-			else: # goal is far than one step
-				nnPath = us.stepNodesQ(nnNode,newnode,step)
-				collision = False
-				for pathNode in nnPath: # check the path to goal
-					robot.SetActiveDOFValues(pathNode)
+			if chance < goalbias: # try to connect the goal
+				# print "try goal"
+				newnode = goalconfig
+				nnNode = us.nnNodeCQ(cTree,newnode)
+				# nnNode = newAddedNode
+				if us.distXQ(nnNode,newnode) <= step: # goal is within one step length!
+					cTree[tuple(goalconfig)] = tuple(nnNode) 
+					print "find path, it is just near!"
+					break
+				else: # goal is far than one step
+					nnPath = us.stepNodesQ(nnNode,newnode,step)
+					collision = False
+					for pathNode in nnPath: # check the path to goal
+						robot.SetActiveDOFValues(pathNode)
+						if env.CheckCollision(robot) == True:
+							collision = True
+							break
+
+					if collision == False: # the path is clear!
+						cTree[tuple(nnPath[0])] = tuple(nnNode)
+						for i in range(1,len(nnPath)):
+							cTree[tuple(nnPath[i])] = tuple(nnPath[i-1])
+						# cTree[tuple(goalconfig)] = tuple(nnPath[len(nnPath)-1])	
+							# print nnPath[i-1]
+
+						print "find path, by setp nodes!"	
+						break
+			else: # add new node to the RRT tree
+
+				newnode = us.sampleCQ();
+				# robot.SetActiveDOFValues(newnode)
+				# time.sleep(0.2)
+				nnNode = us.nnNodeCQ(cTree,newnode)
+				steerNode = us.step1NodeQ(nnNode,newnode,step)
+
+				robot.SetActiveDOFValues(steerNode)
+				# time.sleep(0.4)
+				if env.CheckCollision(robot) == False:
+					cTree[tuple(steerNode)] = tuple(nnNode)
+					# newAddedNode = steerNode
+					cTreeSize += 1
+					print "add new node  cTree size:",cTreeSize	
+
+		robot.SetActiveDOFValues(startconfig) # return the robot the start            
+
+
+
+
+
+		if tuple(goalconfig) not in cTree: # have not found the path to the goal
+			raw_input("T_T")
+		else:
+			print "find goal in the outcome path!"
+			path = us.getpath(cTree,goalconfig)
+			# smooth path
+
+			for i in range(200):
+				print i
+				n = len(path)
+				A = randrange(0,n)
+				B = randrange(0,n)
+				while(abs(A-B)<=1):
+					B = randrange(0,n)
+				t = A
+				A = min(A,B)
+				B = max(B,t)
+				a = path[A]
+				b = path[B]
+				smoothPath = us.stepNodesQ(a,b,step)
+				flag = False
+				# print len(smoothPath)
+				for smoothNode in smoothPath:
+					# print smoothNode
+					robot.SetActiveDOFValues(smoothNode)
 					if env.CheckCollision(robot) == True:
-						collision = True
+						flag = True
 						break
 
-				if collision == False: # the path is clear!
-					cTree[tuple(nnPath[0])] = tuple(nnNode)
-					for i in range(1,len(nnPath)):
-						cTree[tuple(nnPath[i])] = tuple(nnPath[i-1])
-					# cTree[tuple(goalconfig)] = tuple(nnPath[len(nnPath)-1])	
-						# print nnPath[i-1]
-
-					print "find path, by setp nodes!"	
-					break
-		else: # add new node to the RRT tree
-
-			newnode = us.sampleCQ();
-			# robot.SetActiveDOFValues(newnode)
-			# time.sleep(0.2)
-			nnNode = us.nnNodeCQ(cTree,newnode)
-			steerNode = us.step1NodeQ(nnNode,newnode,step)
-
-			robot.SetActiveDOFValues(steerNode)
-			# time.sleep(0.4)
-			if env.CheckCollision(robot) == False:
-				cTree[tuple(steerNode)] = tuple(nnNode)
-				# newAddedNode = steerNode
-				cTreeSize += 1
-				print "add new node  cTree size:",cTreeSize	
-
-	robot.SetActiveDOFValues(startconfig) # return the robot the start            
+				if flag == False:
+					for k in range(A+1,B):
+						del path[A+1]
+						# print 'smoothing'
+					k = A+1    
+					for smoothNode in smoothPath:
+						path.insert(k,smoothNode)
+						k = k + 1
 
 
-
-
-
-	if tuple(goalconfig) not in cTree: # have not found the path to the goal
-		raw_input("T_T")
-	else:
-		print "find goal in the outcome path!"
-		path = us.getpath(cTree,goalconfig)
-		# smooth path
-
-		for i in range(200):
-			print i
-			n = len(path)
-			A = randrange(0,n)
-			B = randrange(0,n)
-			while(abs(A-B)<=1):
-				B = randrange(0,n)
-			t = A
-			A = min(A,B)
-			B = max(B,t)
-			a = path[A]
-			b = path[B]
-			smoothPath = us.stepNodesQ(a,b,step)
-			flag = False
-			# print len(smoothPath)
-			for smoothNode in smoothPath:
-				# print smoothNode
-				robot.SetActiveDOFValues(smoothNode)
-				if env.CheckCollision(robot) == True:
-					flag = True
-					break
-
-			if flag == False:
-				for k in range(A+1,B):
-					del path[A+1]
-					# print 'smoothing'
-				k = A+1    
-				for smoothNode in smoothPath:
-					path.insert(k,smoothNode)
-					k = k + 1
 		color = array(((0,0,1)))
 
 		path = us.discretePath(path, 0.1)
@@ -204,6 +226,13 @@ if __name__ == "__main__":
 			handles.append(env.plot3(points=dot(array([i[0],i[1],i[2]]),1),
 									   pointsize=0.03,
 									   colors=color,
+									   drawstyle=1));
+		NarrPt = FindNarrowPt(path,0.3,1);
+		print len(NarrPt)
+		iii = NarrPt[int(len(NarrPt)/2)]
+		handles.append(env.plot3(points=dot(array([iii[0],iii[1],iii[2]]),1),
+									   pointsize=0.03,
+									   colors=(1,0,0),
 									   drawstyle=1));
 	# end of within env 
 	robot.SetActiveDOFValues(startconfig)
